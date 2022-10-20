@@ -52,6 +52,11 @@ variable "hostnames" {
   description = "List of hostnames to create listerner rule and optionally, DNS records for this app"
 }
 
+variable "hostnames_blue" {
+  default     = []
+  description = "List of hostnames to create listerner rule for and optionally, DNS records for this app"
+}
+
 variable "source_ips" {
   default     = []
   description = "List of source ip to use on listerner rule"
