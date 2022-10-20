@@ -53,7 +53,6 @@ In addition you have the option to create or not :
 | Name | Version |
 |------|---------|
 | aws | n/a |
-| random | n/a |
 
 ## Inputs
 
