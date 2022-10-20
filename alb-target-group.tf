@@ -1,5 +1,5 @@
 resource "aws_lb_listener_rule" "green" {
-  listener_arn = "${var.alb_listener_https_arn}"
+  listener_arn = var.alb_listener_https_arn
 
   action {
     type             = "forward"
@@ -21,8 +21,9 @@ resource "aws_lb_listener_rule" "green" {
   }
 
   condition {
-    field  = "host-header"
-    values = split(",", var.hostname)
+    host_header {
+      values = var.hostnames
+    }
   }
 
   lifecycle {
@@ -34,7 +35,7 @@ resource "aws_lb_listener_rule" "green" {
 }
 
 resource "aws_lb_listener_rule" "blue" {
-  listener_arn = "${var.alb_listener_https_arn}"
+  listener_arn = var.alb_listener_https_arn
 
   action {
     type             = "forward"
@@ -56,12 +57,13 @@ resource "aws_lb_listener_rule" "blue" {
   }
 
   condition {
-    field  = "host-header"
-    values = ["${var.hostname_blue}"]
+    host_header {
+      values = try(["${var.hostname_blue}"], [])
+    }
   }
 
   lifecycle {
-    ignore_changes = ["action[0].target_group_arn"]
+    ignore_changes = [action[0].target_group_arn]
   }
 }
 
@@ -73,7 +75,7 @@ resource "aws_lb_listener_rule" "redirects" {
     type = "redirect"
 
     redirect {
-      host        = "${var.hostname}"
+      host        = "${var.hostnames}"
       port        = "443"
       protocol    = "HTTPS"
       status_code = "HTTP_301"
@@ -81,8 +83,9 @@ resource "aws_lb_listener_rule" "redirects" {
   }
 
   condition {
-    field  = "host-header"
-    values = ["${element(split(",", var.hostname_redirects), count.index)}"]
+    host_header {
+      values = ["${element(split(",", var.hostname_redirects), count.index)}"]
+    }
   }
 }
 
