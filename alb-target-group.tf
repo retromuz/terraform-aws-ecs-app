@@ -75,7 +75,7 @@ resource "aws_lb_listener_rule" "redirects" {
     type = "redirect"
 
     redirect {
-      host        = "${var.hostnames}"
+      host        = var.hostnames
       port        = "443"
       protocol    = "HTTPS"
       status_code = "HTTP_301"
